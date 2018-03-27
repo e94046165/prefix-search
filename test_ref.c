@@ -7,8 +7,8 @@
 
 /** constants insert, delete, max word(s) & stack nodes */
 enum { INS, DEL, WRDMAX = 256, STKMAX = 512, LMAX = 1024 };
-#define REF INS
-#define CPY DEL
+#define REF INS // REF = 0
+#define CPY DEL // CPY = 1
 
 /* timing helper function */
 static double tvgetf(void)
@@ -32,7 +32,7 @@ static void rmcrlf(char *s)
         s[--len] = 0;
 }
 
-#define IN_FILE "cities.txt"
+#define IN_FILE "cities2.txt"
 
 int main(int argc, char **argv)
 {
@@ -49,10 +49,13 @@ int main(int argc, char **argv)
     }
 
     t1 = tvgetf();
-    while ((rtn = fscanf(fp, "%s", word)) != EOF) {
-        char *p = word;
+    char word2[15000][WRDMAX];
+    int q =0;
+    while ((rtn = fscanf(fp, "%s", word2[q])) != EOF) {
+        char *p = word2[q];
+        q++;
         /* FIXME: insert reference to each string */
-        if (!tst_ins_del(&root, &p, INS, CPY)) {
+        if (!tst_ins_del(&root, &p, INS, REF)) {
             fprintf(stderr, "error: memory exhausted, tst_insert.\n");
             fclose(fp);
             return 1;
@@ -87,7 +90,7 @@ int main(int argc, char **argv)
             p = word;
             t1 = tvgetf();
             /* FIXME: insert reference to each string */
-            res = tst_ins_del(&root, &p, INS, CPY);
+            res = tst_ins_del(&root, &p, INS, REF);
             t2 = tvgetf();
             if (res) {
                 idx++;
@@ -123,7 +126,8 @@ int main(int argc, char **argv)
             t2 = tvgetf();
             if (res) {
                 printf("  %s - searched prefix in %.6f sec\n\n", word, t2 - t1);
-                for (int i = 0; i < sidx; i++)
+                int i;
+                for (i = 0; i < sidx; i++)
                     printf("suggest[%d] : %s\n", i, sgl[i]);
             } else
                 printf("  %s - not found\n", word);
@@ -139,7 +143,7 @@ int main(int argc, char **argv)
             printf("  deleting %s\n", word);
             t1 = tvgetf();
             /* FIXME: remove reference to each string */
-            res = tst_ins_del(&root, &p, DEL, CPY);
+            res = tst_ins_del(&root, &p, DEL, REF);
             t2 = tvgetf();
             if (res)
                 printf("  delete failed.\n");
