@@ -5,11 +5,12 @@
 
 #include "tst.h"
 
+
 /** constants insert, delete, max word(s) & stack nodes */
 enum { INS, DEL, WRDMAX = 256, STKMAX = 512, LMAX = 1024 };
 #define REF INS // REF = 0
 #define CPY DEL // CPY = 1
-
+char word2[300000][WRDMAX];
 /* timing helper function */
 static double tvgetf(void)
 {
@@ -32,7 +33,7 @@ static void rmcrlf(char *s)
         s[--len] = 0;
 }
 
-#define IN_FILE "cities2.txt"
+#define IN_FILE "cities.txt"
 
 int main(int argc, char **argv)
 {
@@ -49,8 +50,9 @@ int main(int argc, char **argv)
     }
 
     t1 = tvgetf();
-    char word2[15000][WRDMAX];
-    int q =0;
+
+    int q = 0;
+
     while ((rtn = fscanf(fp, "%s", word2[q])) != EOF) {
         char *p = word2[q];
         q++;
@@ -153,7 +155,7 @@ int main(int argc, char **argv)
             }
             break;
         case 'q':
-            tst_free_all(root);
+            tst_free(root);
             return 0;
             break;
         default:
